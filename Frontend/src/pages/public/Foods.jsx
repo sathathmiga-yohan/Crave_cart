@@ -252,34 +252,37 @@ function Foods() {
               foods={foods}
             />
 
-
             {/* PAGINATION */}
 
-            <div className="food-pagination">
+            {(page > 1 || foods.length === limit) && (
 
-              <button
-                type="button"
-                onClick={handlePreviousPage}
-                disabled={page === 1}
-              >
-                Previous
-              </button>
+              <div className="food-pagination">
 
-
-              <span>
-                Page {page}
-              </span>
+                <button
+                  type="button"
+                  onClick={handlePreviousPage}
+                  disabled={page === 1}
+                >
+                  Previous
+                </button>
 
 
-              <button
-                type="button"
-                onClick={handleNextPage}
-                disabled={foods.length < limit}
-              >
-                Next
-              </button>
+                <span>
+                  Page {page}
+                </span>
 
-            </div>
+
+                <button
+                  type="button"
+                  onClick={handleNextPage}
+                  disabled={foods.length < limit}
+                >
+                  Next
+                </button>
+
+              </div>
+
+            )}
 
           </>
 

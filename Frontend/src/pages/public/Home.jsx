@@ -3,41 +3,31 @@ import { Link } from "react-router-dom";
 
 import FoodGrid from "../../components/food/FoodGrid";
 import { getFoods } from "../../services/foodService";
-
+import { getCategories } from "../../services/categoryService";
 import heroImage from "../../assets/hero.png";
-
 
 function Home() {
 
   const [foods, setFoods] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
 
   useEffect(() => {
-
-    const loadFoods = async () => {
-
+    const loadHome = async () => {
       try {
-
-        const data = await getFoods({
-          is_available: true,
-          page: 1,
-          limit: 4,
-        });
-
-        setFoods(
-          Array.isArray(data)
-            ? data
-            : []
-        );
-
+        setLoading(true);
+        setError("");
+        const [foodData, categoryData] = await Promise.all([
+          getFoods({ is_available: true, sort: "created_at", order: "desc", page: 1, limit: 4 }),
+          getCategories(),
+        ]);
+        setFoods(Array.isArray(foodData) ? foodData : []);
+        setCategories(Array.isArray(categoryData) ? categoryData.slice(0, 6) : []);
       } catch (error) {
-
-        setError(
-          "Unable to load foods. Please try again."
-        );
-
+        console.error("Failed to load home page:", error);
+        setError("Unable to load foods. Please try again.");
       } finally {
 
         setLoading(false);
@@ -45,271 +35,41 @@ function Home() {
       }
 
     };
-
-
-    loadFoods();
-
+    loadHome();
   }, []);
 
 
   return (
     <div className="home-page">
 
-
-      {/* HERO SECTION */}
-
       <section className="hero-section">
 
         <div className="hero-container">
 
-
-          {/* HERO TEXT */}
-
           <div className="hero-content">
-
-            <p className="hero-small-text">
-              FRESH • DELICIOUS • EASY
-            </p>
-
-            <h1>
-              Delicious Food,
-              <br />
-              Delivered to
-              <br />
-              Your Cravings.
-            </h1>
-
+            <div className="hero-eyebrow"><span /> Fresh food, simple ordering</div>
+            <h1>Your next <em>craving</em><br />is only a few<br />clicks away.</h1>
             <p className="hero-description">
-              Discover delicious meals, add your
-              favourites to cart and place your
-              order easily with CraveCart.
+              Discover food you love, build your cart and place your order without the fuss.
             </p>
-
-
             <div className="hero-actions">
-
-              <Link
-                to="/foods"
-                className="hero-button"
-              >
-                Explore Foods
-              </Link>
-
-              <a
-                href="#how-it-works"
-                className="hero-secondary-button"
-              >
-                How It Works
-              </a>
-
+              <Link to="/foods" className="hero-button">Explore the menu <span>→</span></Link>
+              <a href="#how-it-works" className="hero-secondary-button">How it works</a>
             </div>
-
-
             <div className="hero-features">
-
-              <span>
-                ✓ Easy Ordering
-              </span>
-
-              <span>
-                ✓ Fresh Choices
-              </span>
-
-              <span>
-                ✓ Simple Checkout
-              </span>
-
+              <span><b>01</b> Browse</span><span><b>02</b> Add to cart</span><span><b>03</b> Enjoy</span>
             </div>
 
           </div>
-
-
-          {/* HERO IMAGE */}
 
           <div className="hero-image-wrapper">
-
-            <div className="hero-image-background"></div>
-
-            <img
-              src={heroImage}
-              alt="Delicious CraveCart food"
-              className="hero-image"
-            />
-
+            
+            <div className="hero-image-background" />
+            <img src={heroImage} alt="Delicious CraveCart food" className="hero-image" />
             <div className="hero-floating-card">
-              <span className="hero-floating-icon">
-                ★
-              </span>
-
-              <div>
-                <strong>
-                  Delicious Choices
-                </strong>
-
-                <p>
-                  Made for your cravings
-                </p>
-              </div>
+              <span className="hero-floating-icon">★</span>
+              <div><strong>Made for cravings</strong><p>Fresh choices, easy ordering</p></div>
             </div>
-
-          </div>
-
-
-        </div>
-
-      </section>
-
-
-      {/* FEATURED FOODS */}
-
-      <section className="home-food-section">
-
-        <div className="section-heading">
-
-          <div>
-
-            <p className="section-small-title">
-              OUR MENU
-            </p>
-
-            <h2>
-              Featured Foods
-            </h2>
-
-            <p className="section-description">
-              Explore some delicious choices
-              available on CraveCart.
-            </p>
-
-          </div>
-
-
-          <Link
-            to="/foods"
-            className="view-all-link"
-          >
-            View All Foods →
-          </Link>
-
-        </div>
-
-
-        {loading && (
-          <p className="home-message">
-            Loading foods...
-          </p>
-        )}
-
-
-        {error && (
-          <p className="home-error">
-            {error}
-          </p>
-        )}
-
-
-        {!loading && !error && (
-          <FoodGrid foods={foods} />
-        )}
-
-      </section>
-
-
-      {/* HOW IT WORKS */}
-
-      <section
-        className="how-it-works-section"
-        id="how-it-works"
-      >
-
-        <div className="how-it-works-container">
-
-          <div className="home-center-heading">
-
-            <p className="section-small-title">
-              SIMPLE & EASY
-            </p>
-
-            <h2>
-              How CraveCart Works
-            </h2>
-
-            <p>
-              Your favourite food is only
-              a few simple steps away.
-            </p>
-
-          </div>
-
-
-          <div className="how-it-works-grid">
-
-
-            <div className="how-card">
-
-              <div className="how-card-number">
-                01
-              </div>
-
-              <div className="how-card-icon">
-                🔍
-              </div>
-
-              <h3>
-                Explore Foods
-              </h3>
-
-              <p>
-                Browse our menu and find the
-                food you are craving.
-              </p>
-
-            </div>
-
-
-            <div className="how-card">
-
-              <div className="how-card-number">
-                02
-              </div>
-
-              <div className="how-card-icon">
-                🛒
-              </div>
-
-              <h3>
-                Add to Cart
-              </h3>
-
-              <p>
-                Add your favourite items and
-                choose the quantity you need.
-              </p>
-
-            </div>
-
-
-            <div className="how-card">
-
-              <div className="how-card-number">
-                03
-              </div>
-
-              <div className="how-card-icon">
-                ✓
-              </div>
-
-              <h3>
-                Place Your Order
-              </h3>
-
-              <p>
-                Enter your details, confirm
-                your cart and place your order.
-              </p>
-
-            </div>
-
 
           </div>
 
@@ -317,47 +77,33 @@ function Home() {
 
       </section>
 
-
-      {/* BOTTOM CTA */}
-
-      <section className="home-cta-section">
-
-        <div className="home-cta-content">
-
-          <div>
-
-            <p className="home-cta-small">
-              READY TO ORDER?
-            </p>
-
-            <h2>
-              Find something you'll love.
-            </h2>
-
-            <p>
-              Explore CraveCart and choose
-              your next favourite meal.
-            </p>
-
+      <section className="home-featured-section">
+        <div className="home-section-container">
+          <div className="home-section-heading split-heading">
+            <div><p className="section-small-title">FRESH FROM THE MENU</p><h2>Popular picks for you</h2><p>Good food, ready when the craving hits.</p></div>
+            <Link to="/foods" className="text-link">Explore all foods →</Link>
           </div>
-
-
-          <Link
-            to="/foods"
-            className="home-cta-button"
-          >
-            Browse Menu
-          </Link>
-
+          {loading && <div className="home-message">Loading delicious choices...</div>}
+          {error && <div className="home-error">{error}</div>}
+          {!loading && !error && foods.length > 0 && <FoodGrid foods={foods} />}
         </div>
-
       </section>
 
-
+      <section className="how-section" id="how-it-works">
+        <div className="home-section-container">
+          <div className="how-intro">
+            <p className="section-small-title">HOW IT WORKS</p>
+            <h2>From craving to cart.<br /><em>Three easy steps.</em></h2>
+          </div>
+          <div className="how-grid">
+            <article className="how-card"><span>01</span><div className="how-icon">⌕</div><h3>Find your food</h3><p>Browse the menu, search your favourites and discover something delicious.</p></article>
+            <article className="how-card"><span>02</span><div className="how-icon">＋</div><h3>Build your cart</h3><p>Choose what you want, set the quantity and review your order anytime.</p></article>
+            <article className="how-card"><span>03</span><div className="how-icon">✓</div><h3>Place your order</h3><p>Add your details, confirm the order and follow its progress from your account.</p></article>
+          </div>
+        </div>
+      </section>
     </div>
   );
-
 }
-
 
 export default Home;

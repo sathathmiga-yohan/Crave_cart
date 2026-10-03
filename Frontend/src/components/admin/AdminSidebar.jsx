@@ -126,6 +126,13 @@ function AdminSidebar() {
           Users
         </NavLink>
 
+        <NavLink
+          to="/"
+          className="admin-home-link"
+        >
+          ← Back to Home
+        </NavLink>
+
       </nav>
 
 
