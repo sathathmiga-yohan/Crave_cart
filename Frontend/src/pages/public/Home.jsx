@@ -63,12 +63,20 @@ function Home() {
           </div>
 
           <div className="hero-image-wrapper">
-            
-            <div className="hero-image-background" />
-            <img src={heroImage} alt="Delicious CraveCart food" className="hero-image" />
+
+            <img
+              src={heroImage}
+              alt="Delicious CraveCart food"
+              className="hero-image"
+            />
+
             <div className="hero-floating-card">
               <span className="hero-floating-icon">★</span>
-              <div><strong>Made for cravings</strong><p>Fresh choices, easy ordering</p></div>
+
+              <div>
+                <strong>Made for cravings</strong>
+                <p>Fresh choices, easy ordering</p>
+              </div>
             </div>
 
           </div>
